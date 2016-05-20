@@ -10,6 +10,7 @@ import android.graphics.LightingColorFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
@@ -24,6 +25,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Handler;
 
 public class gpsLocation extends AppCompatActivity implements LocationListener {
@@ -57,18 +74,27 @@ public class gpsLocation extends AppCompatActivity implements LocationListener {
         button2.setEnabled(false);
         button2.setText("Waiting for gps signal");
 
-
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                List<Dater> da = null;
+                try {
+                    da = (List<Dater>) new getDatersAsync().execute().get();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Intent i = new Intent(gpsLocation.this, MapsActivity.class);
                 i.putExtra("LOCATION", loc);
+                Bundle b = new Bundle();
+                b.putSerializable("ListDaters", (Serializable) da);
+                i.putExtra("Daters",b);
                 startActivity(i);
 
             }
         });
  }
+
 
     private boolean checkPermission(){
 
@@ -127,6 +153,71 @@ public class gpsLocation extends AppCompatActivity implements LocationListener {
 
         if(checkPermission()){
             locationManager.removeUpdates(this);
+        }
+    }
+
+    public class getDatersAsync extends AsyncTask<List<Dater>,Void,List<Dater>>{
+        URL url;
+        HttpURLConnection urlConnection;
+        @Override
+        protected List<Dater> doInBackground(List<Dater>... params) {
+            try {
+                url = new URL("http://android2-smcphbusiness.rhcloud.com/users");
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+                List<Dater> daters = readStream(in);
+
+                return daters;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }finally {
+                urlConnection.disconnect();
+            }return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Dater> s) {
+        }
+
+        private List<Dater> readStream(InputStream is) throws JSONException {
+            float lat = 0;
+            float lon = 0;
+            Dater dater = null;
+            List<Dater> daters = new ArrayList<>();
+            try {
+                ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                int i = is.read();
+                while(i != -1) {
+                    bo.write(i);
+                    i = is.read();
+                }
+                JSONArray jarray = new JSONArray(bo.toString());
+                for(int j = 0; j < jarray.length();j++){
+                JSONObject jsonobject = jarray.getJSONObject(j);
+                    String name = jsonobject.optString("name").toString();
+
+                    JSONArray jsonArraylocationg = jsonobject.getJSONArray("loc");
+                    for(int k = 0; k<jsonArraylocationg.length();k++){
+                        JSONObject jsonObject = jsonArraylocationg.getJSONObject(k);
+                        lat = Float.parseFloat(jsonObject.optString("lat"));
+                        lon = Float.parseFloat(jsonObject.optString("lon"));
+                    }
+                    dater = new Dater(name,lat,lon);
+                    daters.add(dater);
+
+                }
+
+                return daters;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

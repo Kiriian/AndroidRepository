@@ -17,7 +17,7 @@
         android:id="@+id/personfragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.datasteffen.testandroidgps.Person"
+        android:name="com.datasteffen.testandroidgps.PersonFragment"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/map" />
 

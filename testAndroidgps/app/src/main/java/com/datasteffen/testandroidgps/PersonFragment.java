@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 
 
-public class Person extends Fragment {
+public class PersonFragment extends Fragment {
 
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

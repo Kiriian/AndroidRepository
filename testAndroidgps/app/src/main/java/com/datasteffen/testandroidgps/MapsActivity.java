@@ -14,6 +14,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -45,13 +48,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle bundle = getIntent().getExtras();
        Location loc = (Location) bundle.get("LOCATION");
 
+
+        List<Dater> dater = new ArrayList<>();
+
+        dater = (ArrayList<Dater>) getIntent().getBundleExtra("Daters").getSerializable("ListDaters");
+
+        for (Dater d :dater) {
+            LatLng Lulu = new LatLng(d.getLat(),d.getLon());
+            mMap.addMarker(new MarkerOptions().position(Lulu).title(d.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        }
+
+
         // Add a marker in Sydney and move the camera
         LatLng Me = new LatLng(loc.getLatitude(),loc.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Me, 15));
         mMap.addMarker(new MarkerOptions().position(Me).title("YOUR LOCATION").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))).showInfoWindow();
 
-        LatLng Lulu = new LatLng(55.77,12.50);
-        mMap.addMarker(new MarkerOptions().position(Lulu).title("LULU").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
     }
 }
