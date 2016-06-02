@@ -1,58 +1,57 @@
 package com.datasteffen.datenclick;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by steffen on 23-05-2016.
  */
 public class ActiveProfile implements Serializable {
 
-    private String _id;
-    private float lat;
-    private float lon;
+    private String email;
+    private double lat;
+    private double lon;
     private byte[] imgbytes;
-    private Date date;
+
 
     public ActiveProfile() {
     }
 
-    public ActiveProfile(float lat, float lon, byte[] imgbytes, Date date) {
+    public ActiveProfile(double lat, double lon, byte[] imgbytes) {
         this.lat = lat;
         this.lon = lon;
         this.imgbytes = imgbytes;
-        this.date = date;
+
     }
 
-    public ActiveProfile(String _id, float lat, float lon, byte[] imgbytes, Date date) {
-        this._id = _id;
+    public ActiveProfile(String email, double lat, double lon, byte[] imgbytes) {
+        this.email = email;
         this.lat = lat;
         this.lon = lon;
         this.imgbytes = imgbytes;
-        this.date = date;
+
     }
 
-    public String get_id() {
-        return _id;
+    public String getEmail() {
+        return email;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public float getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(float lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
@@ -64,11 +63,5 @@ public class ActiveProfile implements Serializable {
         this.imgbytes = imgbytes;
     }
 
-    public Date getDate() {
-        return date;
-    }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
 }

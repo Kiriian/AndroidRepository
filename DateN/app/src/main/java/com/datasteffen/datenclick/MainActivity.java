@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
                 byte[] b = ms.TakePicture();
                i.putExtra("picture1",b);
                i.putExtra("from",p);
+
                 startActivity(i);
             }
         });

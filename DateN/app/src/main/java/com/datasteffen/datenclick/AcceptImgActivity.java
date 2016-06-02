@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -19,9 +20,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class AcceptImgActivity extends AppCompatActivity implements LocationListener {
@@ -35,7 +43,10 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
     ImageView im;
     Button btnback;
     Button btnforward;
-    Profile p;
+    Profile p = null;
+    byte[] b = null;
+    ActiveProfile activeProfile = new ActiveProfile();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +66,14 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         im = (ImageView) findViewById(R.id.imageview1);
         btnback = (Button) findViewById(R.id.btnback);
         btnforward = (Button) findViewById(R.id.btnok);
+        btnforward.setEnabled(false);
 
         btnback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent i = new Intent(AcceptImgActivity.this,MainActivity.class);
+
                 startActivity(i);
 
             }
@@ -69,10 +82,22 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         btnforward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = getIntent().getExtras();
 
-                Intent intent = getIntent();
-                Profile p =(Profile) intent.getSerializableExtra("from");
-               //
+                p = (Profile) bundle.get("from");
+                b = (byte[]) bundle.get("picture1");
+
+                activeProfile.setLat(loc.getLatitude());
+                activeProfile.setLon(loc.getLongitude());
+                activeProfile.setEmail(p.getEmail());
+                activeProfile.setImgbytes(b);
+
+               Intent i = new Intent(AcceptImgActivity.this,MapsActivity.class);
+               i.putExtra("ownlocation",activeProfile);
+               i.putExtra("from", p);
+               i.putExtra("picture1",b);
+               new AsyncTaskSendactiveprofileToDb().execute();
+                startActivity(i);
 
             }
         });
@@ -96,9 +121,7 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
     @Override
     public void onLocationChanged(Location location) {
         loc = location;
-
-        Toast.makeText(getApplicationContext(), String.valueOf(location.getLongitude()),Toast.LENGTH_SHORT).show();
-
+        btnforward.setEnabled(true);
     }
 
     @Override
@@ -137,11 +160,47 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
     public void requestPermissions(){
 
         if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-            Toast.makeText(this, "Please activate your GPS, This App use your location", Toast.LENGTH_LONG).show();
+
         }else {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
     }
 
+public class AsyncTaskSendactiveprofileToDb extends AsyncTask<ActiveProfile,Void,ActiveProfile>{
+
+
+
+
+    @Override
+    protected ActiveProfile doInBackground(ActiveProfile... params) {
+
+        HttpURLConnection urlConnection = null;
+
+        try {
+            URL url = new URL("http://android2-smcphbusiness.rhcloud.com/users/activeprofile");
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+
+            OutputStream os = urlConnection.getOutputStream();
+            OutputStreamWriter wr = new OutputStreamWriter(os);
+            JSONObject jsonObject = new JSONObject(activeProfile.toString());
+
+
+            wr.write(jsonObject.toString());
+            wr.flush();
+            wr.close();
+            os.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
 }

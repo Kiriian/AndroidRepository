@@ -62,7 +62,7 @@ public class SignupActivity extends AppCompatActivity {
                 intent.putExtra("profilefromsignup",pf);
                 startActivity(intent);
 
-                //Toast.makeText(getApplicationContext(),pf.getName(),Toast.LENGTH_LONG).show();
+
                 try {
                     pf = new AsyncTaskSendUserToDb().execute(pf).get();
                     //to do, save pf in sqllite
