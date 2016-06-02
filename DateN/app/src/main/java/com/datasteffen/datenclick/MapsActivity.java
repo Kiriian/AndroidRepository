@@ -44,6 +44,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latlon = new LatLng(activeProfile.getLat(), activeProfile.getLon());
         mMap.addMarker(new MarkerOptions().position(latlon).title(profile.getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latlon));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlon, 15f));
     }
 }

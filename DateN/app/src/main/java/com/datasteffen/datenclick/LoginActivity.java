@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity  {
                     profile = new UserLoginTask().execute().get();
                     if(profile !=null){
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                        i.putExtra("profiletoimage",profile);
+                        i.putExtra("from",profile);
                         startActivity(i);
                     }else {
                         Toast.makeText(getApplicationContext(),"Please try login again",Toast.LENGTH_SHORT).show();

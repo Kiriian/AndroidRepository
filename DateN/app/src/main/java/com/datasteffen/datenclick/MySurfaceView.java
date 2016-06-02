@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -44,11 +45,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         mHolder.addCallback(this);
     }
 
-// @Override
-// protected void onDraw(Canvas canvas) {
-// Log.w(this.getClass().getName(), "On Draw Called");
-// }
-
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
@@ -76,12 +72,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        ViewGroup.LayoutParams lp = this.getLayoutParams();
-        lp.width = 800;
-        lp.height = 600;
+//        ViewGroup.LayoutParams lp = this.getLayoutParams();
+//        lp.width = 800;
+//        lp.height = 600;
+//        this.setLayoutParams(lp);
 
-
-        this.setLayoutParams(lp);
         synchronized (this) {
             if (isPreviewRunning)
                 return;
@@ -124,8 +119,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public byte[] TakePicture(){
-
+    public byte[] TakePicture()
+    {
         return imageBytes;
     }
 

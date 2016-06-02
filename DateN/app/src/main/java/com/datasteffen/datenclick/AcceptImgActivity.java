@@ -11,8 +11,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,16 +19,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-
 
 public class AcceptImgActivity extends AppCompatActivity implements LocationListener {
 
@@ -52,8 +47,11 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_img);
-
+        Bundle bundle = getIntent().getExtras();
         LocationAvailable = false;
+
+        p = (Profile) bundle.get("from");
+        b = (byte[]) bundle.get("picture1");
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission()){
@@ -73,7 +71,7 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
             public void onClick(View v) {
 
                 Intent i = new Intent(AcceptImgActivity.this,MainActivity.class);
-
+                i.putExtra("from", p);
                 startActivity(i);
 
             }
@@ -82,27 +80,23 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         btnforward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = getIntent().getExtras();
 
-                p = (Profile) bundle.get("from");
-                b = (byte[]) bundle.get("picture1");
 
                 activeProfile.setLat(loc.getLatitude());
                 activeProfile.setLon(loc.getLongitude());
                 activeProfile.setEmail(p.getEmail());
                 activeProfile.setImgbytes(b);
 
-               Intent i = new Intent(AcceptImgActivity.this,MapsActivity.class);
-               i.putExtra("ownlocation",activeProfile);
-               i.putExtra("from", p);
-               i.putExtra("picture1",b);
-               new AsyncTaskSendactiveprofileToDb().execute();
+                Intent i = new Intent(AcceptImgActivity.this,MapsActivity.class);
+                i.putExtra("ownlocation",activeProfile);
+                i.putExtra("from", p);
+                i.putExtra("picture1",b);
+                new AsyncTaskSendactiveprofileToDb().execute();
                 startActivity(i);
 
             }
         });
 
-        Bundle bundle = getIntent().getExtras();
         byte[] b = (byte[]) bundle.get("picture1");
         Bitmap image = BitmapFactory.decodeByteArray(b, 0, b.length);
 
@@ -167,40 +161,38 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         }
     }
 
-public class AsyncTaskSendactiveprofileToDb extends AsyncTask<ActiveProfile,Void,ActiveProfile>{
+    public class AsyncTaskSendactiveprofileToDb extends AsyncTask<ActiveProfile,Void,ActiveProfile> {
 
 
+        @Override
+        protected ActiveProfile doInBackground(ActiveProfile... params) {
+
+            HttpURLConnection urlConnection = null;
+
+            try {
+                URL url = new URL("http://android2-smcphbusiness.rhcloud.com/users/activeprofile");
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                OutputStream os = urlConnection.getOutputStream();
+                OutputStreamWriter wr = new OutputStreamWriter(os);
+                JSONObject jsonObject = new JSONObject(activeProfile.toString());
 
 
-    @Override
-    protected ActiveProfile doInBackground(ActiveProfile... params) {
-
-        HttpURLConnection urlConnection = null;
-
-        try {
-            URL url = new URL("http://android2-smcphbusiness.rhcloud.com/users/activeprofile");
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-
-            OutputStream os = urlConnection.getOutputStream();
-            OutputStreamWriter wr = new OutputStreamWriter(os);
-            JSONObject jsonObject = new JSONObject(activeProfile.toString());
+                wr.write(jsonObject.toString());
+                wr.flush();
+                wr.close();
+                os.close();
 
 
-            wr.write(jsonObject.toString());
-            wr.flush();
-            wr.close();
-            os.close();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-        return null;
     }
-}
 }
