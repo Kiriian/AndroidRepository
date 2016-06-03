@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ms = new MySurfaceView(getApplicationContext(),null);
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity{
                 != PackageManager.PERMISSION_GRANTED) {
 
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
 
         }
 

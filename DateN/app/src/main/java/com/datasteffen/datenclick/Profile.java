@@ -43,6 +43,18 @@ public class Profile implements Serializable {
         this.searchtoage = searchtoage;
     }
 
+    public Profile(String _id, String email, String name, int age, String gender, Boolean searchmale, Boolean searchfemale, int searchfromage, int searchtoage) {
+        this._id = _id;
+        this.email = email;
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.searchmale = searchmale;
+        this.searchfemale = searchfemale;
+        this.searchfromage = searchfromage;
+        this.searchtoage = searchtoage;
+    }
+
     public Profile(String _id, String email, String password, String name, int age, String gender, Boolean searchmale, Boolean searchfemale, int searchfromage, int searchtoage) {
         this._id = _id;
         this.email = email;

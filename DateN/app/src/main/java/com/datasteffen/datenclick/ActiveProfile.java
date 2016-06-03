@@ -1,5 +1,8 @@
 package com.datasteffen.datenclick;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -64,4 +67,19 @@ public class ActiveProfile implements Serializable {
     }
 
 
+    public String toJson(){
+        JSONObject job = new JSONObject();
+
+        try {
+
+            job.put("email",getEmail());
+            job.put("lat",getLat());
+            job.put("lon",getLon());
+           // job.put("image",getImgbytes());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return job.toString();
+    }
 }

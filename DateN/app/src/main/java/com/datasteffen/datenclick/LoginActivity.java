@@ -130,7 +130,6 @@ public class LoginActivity extends AppCompatActivity  {
                 urlConnection = (HttpURLConnection) url.openConnection();
 
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                Log.d("det", in.toString());
                 Profile pf =  readStream(in);
 
 
@@ -163,6 +162,7 @@ public class LoginActivity extends AppCompatActivity  {
             JSONObject jsonobject1 = new JSONObject(bo.toString());
 
             String id = jsonobject1.optString("_id");
+            String email = jsonobject1.optString("email");
             String name = jsonobject1.optString("name");
             int age = Integer.parseInt(jsonobject1.optString("age"));
             String gender = jsonobject1.optString("gender");
@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity  {
             int searchfromage = Integer.parseInt(jsonobject1.optString("searchfromage"));
             int searchtoage = Integer.parseInt(jsonobject1.optString("searchtoage"));
 
-            profile = new Profile(id,name,age,gender,searchmale,searchfemale,searchfromage,searchtoage);
+            profile = new Profile(id,email,name,age,gender,searchmale,searchfemale,searchfromage,searchtoage);
 
             return profile;
         } catch (IOException e) {

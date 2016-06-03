@@ -15,13 +15,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -85,7 +89,7 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
                 activeProfile.setLat(loc.getLatitude());
                 activeProfile.setLon(loc.getLongitude());
                 activeProfile.setEmail(p.getEmail());
-                activeProfile.setImgbytes(b);
+         //       activeProfile.setImgbytes(b);
 
                 Intent i = new Intent(AcceptImgActivity.this,MapsActivity.class);
                 i.putExtra("ownlocation",activeProfile);
@@ -180,17 +184,31 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
 
                 OutputStream os = urlConnection.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(os);
-                JSONObject jsonObject = new JSONObject(activeProfile.toString());
+                String jsonObject = activeProfile.toJson();
+                Log.d("1",jsonObject);
 
-
-                wr.write(jsonObject.toString());
+                wr.write(jsonObject);
                 wr.flush();
                 wr.close();
                 os.close();
 
+                InputStream ins = urlConnection.getInputStream();
+                InputStreamReader isr = new InputStreamReader(ins);
+                BufferedReader in = new BufferedReader(isr);
+
+                String inputLine;
+                String result= "";
+
+                while( (inputLine = in.readLine()) != null )
+                    result += inputLine;
+
+                in.close();
+
 
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                urlConnection.disconnect();
             }
             return null;
         }
