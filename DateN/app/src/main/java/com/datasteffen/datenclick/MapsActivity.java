@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,6 +36,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        try{
+            activeProfileList = new AsyncGetActiveProfile().execute().get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -55,12 +65,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
 
+        ArrayAdapter arrayAdapter = new ActiveProfileAdapter(this,activeProfileList);
+        ListView listview = (ListView)findViewById(R.id.listviewid);
+        listview.setAdapter(arrayAdapter);
 
-        try{
-            activeProfileList = new AsyncGetActiveProfile().execute().get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
 
         Bundle bundle = getIntent().getExtras();
         ActiveProfile activeProfile = (ActiveProfile)bundle.get("ownlocation");
@@ -73,15 +81,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       //  setMarker(activeProfile);
         //    mMap.addMarker(new MarkerOptions().position(latlon).title(activeProfile.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
-
+     //   ListAdapter listAdapter = new ActiveProfileAdapter(this,activeProfileList);
         for (ActiveProfile a :activeProfileList) {
 
             if(a.getName() == activeProfile.getName()){
 
             }else {
                 //   setMarker(a);
-            }
 
+            }
       }
     }
 
