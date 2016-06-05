@@ -20,6 +20,7 @@ public class ActiveProfileAdapter extends ArrayAdapter<ActiveProfile> {
     TextView tv1;
     TextView tv2;
     TextView tv3;
+    TextView tv4;
 
 
     @Override
@@ -35,11 +36,13 @@ public class ActiveProfileAdapter extends ArrayAdapter<ActiveProfile> {
         tv1 = (TextView) customView.findViewById(R.id.textview1);
         tv2 = (TextView) customView.findViewById(R.id.textview2);
         tv3 = (TextView) customView.findViewById(R.id.textview3);
+        tv4 = (TextView) customView.findViewById(R.id.textview4);
 
 
-        tv1.setText(activeProfile.getName());
-        tv2.setText(activeProfile.getEmail());
-        tv3.setText(""+ activeProfile.getLon());
+        tv1.setText("Name: "+ activeProfile.getName());
+        tv2.setText("Email: " +activeProfile.getEmail());
+        tv3.setText("Latitude: "+ activeProfile.getLon());
+        tv4.setText("longitude: " + activeProfile.getLon());
 
         return customView;
     }
