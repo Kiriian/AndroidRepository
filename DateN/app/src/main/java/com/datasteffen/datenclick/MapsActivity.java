@@ -2,16 +2,11 @@ package com.datasteffen.datenclick;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -75,20 +70,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Profile profile = (Profile)bundle.get("from");
 
         setMarkermaster(activeProfile);
-   //     Toast.makeText(MapsActivity.this, "d" + activeProfile.getImgbytes(), Toast.LENGTH_SHORT).show();
 
-
-      //  setMarker(activeProfile);
-        //    mMap.addMarker(new MarkerOptions().position(latlon).title(activeProfile.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-
-     //   ListAdapter listAdapter = new ActiveProfileAdapter(this,activeProfileList);
         for (ActiveProfile a :activeProfileList) {
 
-            if(a.getName() == activeProfile.getName()){
+            if(activeProfile.getName().equals(a.getName())){
 
             }else {
-                //   setMarker(a);
-
+                setMarker(a);
             }
       }
     }
@@ -96,8 +84,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setMarkermaster(ActiveProfile activeProfile){
         Marker marker = null;
-
-
 
         if(activeProfile.getImgbytes() != null){
 
@@ -109,15 +95,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             marker = mMap.addMarker(options);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locate, 15f));
-
-
-
 }}
 
     private void setMarker(ActiveProfile activeProfile){
         Marker marker = null;
-
-
 
         if(activeProfile.getImgbytes() != null){
 
@@ -125,9 +106,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             MarkerOptions options = new MarkerOptions().title(activeProfile.getName()).position(locate)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             marker = mMap.addMarker(options);
-
-
-
 
         }}
 
@@ -151,6 +129,3 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 }
-
-
-//.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));

@@ -11,18 +11,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
-import com.google.android.gms.location.LocationServices;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -119,7 +114,7 @@ public class AcceptImgActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+                activeProfile.setName(p.getName());
                 activeProfile.setLat((float) loc.getLatitude());
                 activeProfile.setLon((float) loc.getLongitude());
                 activeProfile.setEmail(p.getEmail());
