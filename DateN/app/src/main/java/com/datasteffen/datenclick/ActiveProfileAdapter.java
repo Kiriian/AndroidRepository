@@ -38,8 +38,8 @@ public class ActiveProfileAdapter extends ArrayAdapter<ActiveProfile> {
 
 
         tv1.setText(activeProfile.getName());
-        tv2.setText(String.valueOf(activeProfile.getLat()));
-        tv3.setText(String.valueOf(activeProfile.getLon()));
+        tv2.setText(activeProfile.getEmail());
+        tv3.setText(""+ activeProfile.getLon());
 
         return customView;
     }
