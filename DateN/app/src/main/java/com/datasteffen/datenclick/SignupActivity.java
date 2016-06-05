@@ -59,7 +59,7 @@ public class SignupActivity extends AppCompatActivity {
                 pf.setSearchtoage(Integer.parseInt(searchtoage.getText().toString()));
 
                 Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                intent.putExtra("profilefromsignup",pf);
+                intent.putExtra("from",pf);
                 startActivity(intent);
 
 

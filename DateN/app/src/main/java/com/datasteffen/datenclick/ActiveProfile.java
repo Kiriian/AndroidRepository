@@ -10,28 +10,48 @@ import java.io.Serializable;
  */
 public class ActiveProfile implements Serializable {
 
+    private String _id;
+    private String name;
     private String email;
-    private double lat;
-    private double lon;
+    private float lat;
+    private float lon;
     private byte[] imgbytes;
 
 
     public ActiveProfile() {
     }
 
-    public ActiveProfile(double lat, double lon, byte[] imgbytes) {
+    public ActiveProfile(String _id, String name, String email, float lat, float lon, byte[] imgbytes) {
+        this._id = _id;
+        this.name = name;
+        this.email = email;
+        this.lat = lat;
+        this.lon = lon;
+        this.imgbytes = imgbytes;
+    }
+
+    public ActiveProfile(String email, float lat, float lon, byte[] imgbytes) {
+        this.email = email;
         this.lat = lat;
         this.lon = lon;
         this.imgbytes = imgbytes;
 
     }
 
-    public ActiveProfile(String email, double lat, double lon, byte[] imgbytes) {
-        this.email = email;
-        this.lat = lat;
-        this.lon = lon;
-        this.imgbytes = imgbytes;
+    public String get_id() {
+        return _id;
+    }
 
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -42,19 +62,19 @@ public class ActiveProfile implements Serializable {
         this.email = email;
     }
 
-    public double getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(float lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public float getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(float lon) {
         this.lon = lon;
     }
 
@@ -66,7 +86,6 @@ public class ActiveProfile implements Serializable {
         this.imgbytes = imgbytes;
     }
 
-
     public String toJson(){
         JSONObject job = new JSONObject();
 
@@ -75,7 +94,7 @@ public class ActiveProfile implements Serializable {
             job.put("email",getEmail());
             job.put("lat",getLat());
             job.put("lon",getLon());
-           // job.put("image",getImgbytes());
+            job.put("image",getImgbytes());
 
         } catch (JSONException e) {
             e.printStackTrace();

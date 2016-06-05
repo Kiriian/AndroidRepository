@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.location.LocationServices;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -31,8 +33,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class AcceptImgActivity extends AppCompatActivity implements LocationListener {
+public class AcceptImgActivity extends AppCompatActivity {
 
+    LocationListener mlocListener;
     private final static int DISTANCE_UPDATE = 1;
     private final static int TIME_UPDATE = 5;
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -52,15 +55,46 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_img);
         Bundle bundle = getIntent().getExtras();
+
         LocationAvailable = false;
 
         p = (Profile) bundle.get("from");
         b = (byte[]) bundle.get("picture1");
 
+        mlocListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                loc = location;
+                btnforward.setEnabled(true);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                if (checkPermission()) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_UPDATE, DISTANCE_UPDATE, mlocListener);
+                } else {
+                    requestPermissions();
+                }
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+                if (checkPermission()) {
+                    locationManager.removeUpdates(mlocListener);
+                }
+            }
+        };
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (checkPermission()){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,TIME_UPDATE,DISTANCE_UPDATE,this);
-        }else{
+        if (checkPermission()) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_UPDATE, DISTANCE_UPDATE, mlocListener);
+        } else {
             requestPermissions();
         }
 
@@ -74,7 +108,7 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(AcceptImgActivity.this,MainActivity.class);
+                Intent i = new Intent(AcceptImgActivity.this, MainActivity.class);
                 i.putExtra("from", p);
                 startActivity(i);
 
@@ -86,15 +120,15 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
             public void onClick(View v) {
 
 
-                activeProfile.setLat(loc.getLatitude());
-                activeProfile.setLon(loc.getLongitude());
+                activeProfile.setLat((float) loc.getLatitude());
+                activeProfile.setLon((float) loc.getLongitude());
                 activeProfile.setEmail(p.getEmail());
-         //       activeProfile.setImgbytes(b);
+                activeProfile.setImgbytes(b);
 
-                Intent i = new Intent(AcceptImgActivity.this,MapsActivity.class);
-                i.putExtra("ownlocation",activeProfile);
+                Intent i = new Intent(AcceptImgActivity.this, MapsActivity.class);
+                i.putExtra("ownlocation", activeProfile);
                 i.putExtra("from", p);
-                i.putExtra("picture1",b);
+                i.putExtra("picture1", b);
                 new AsyncTaskSendactiveprofileToDb().execute();
                 startActivity(i);
 
@@ -111,35 +145,42 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
         im.setImageBitmap(image);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG,100,out);
+        image.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
         out.toByteArray();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        loc = location;
-        btnforward.setEnabled(true);
-    }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
+    protected void onPause() {
+        super.onPause();
 
         if (checkPermission()) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_UPDATE, DISTANCE_UPDATE, this);
-        }else{requestPermissions();}
+            locationManager.removeUpdates(mlocListener);
+        } else {
+            requestPermissions();
+        }
 
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
-        if(checkPermission()){
-            locationManager.removeUpdates(this);
+    protected void onResume() {
+        super.onResume();
+        if (checkPermission()) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_UPDATE, DISTANCE_UPDATE, mlocListener);
+        } else {
+            requestPermissions();
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (checkPermission()) {
+            locationManager.removeUpdates(mlocListener);
+        } else {
+            requestPermissions();
         }
     }
 
@@ -165,6 +206,8 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
         }
     }
 
+
+
     public class AsyncTaskSendactiveprofileToDb extends AsyncTask<ActiveProfile,Void,ActiveProfile> {
 
 
@@ -185,7 +228,6 @@ public class AcceptImgActivity extends AppCompatActivity implements LocationList
                 OutputStream os = urlConnection.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(os);
                 String jsonObject = activeProfile.toJson();
-                Log.d("1",jsonObject);
 
                 wr.write(jsonObject);
                 wr.flush();

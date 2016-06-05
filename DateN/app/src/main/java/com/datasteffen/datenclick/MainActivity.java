@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity{
     Button c;
     private static int TAKE_PICTURE= -1;
     MySurfaceView ms;
-    Profile p;
+    Profile pr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +62,17 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Bundle bundle = getIntent().getExtras();
-                final Profile p =(Profile) bundle.get("from");
+
+
+                final Profile p = (Profile) bundle.get("from");
+
+                Profile pf = new Profile(p.get_id(),p.getEmail(),p.getName(),p.getAge(),p.getGender(),p.getSearchmale(),p.getSearchfemale(),p.getSearchfromage(),p.getSearchtoage());
 
                 Intent i = new Intent(MainActivity.this,AcceptImgActivity.class);
                 byte[] b = ms.TakePicture();
 
                 i.putExtra("picture1",b);
-                i.putExtra("from",p);
+                i.putExtra("from",pf);
 
                 startActivity(i);
             }

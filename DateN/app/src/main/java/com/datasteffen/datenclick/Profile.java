@@ -183,4 +183,3 @@ public class Profile implements Serializable {
         return job.toString();
     }
 }
-
