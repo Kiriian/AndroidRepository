@@ -2,6 +2,8 @@ package com.datasteffen.datenclick;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
@@ -75,8 +77,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if(activeProfile.getName().equals(a.getName())){
 
-            }else {
+
+           }else {
+
                 setMarker(a);
+
             }
       }
     }
@@ -87,14 +92,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(activeProfile.getImgbytes() != null){
 
-
-           Bitmap bitmap = StringToBitMap(activeProfile.getImgbytes());
-
-            LatLng locate = new LatLng(activeProfile.getLat(),activeProfile.getLon());
+          LatLng locate = new LatLng(activeProfile.getLat(),activeProfile.getLon());
             MarkerOptions options = new MarkerOptions().title(activeProfile.getName()).position(locate)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            marker = mMap.addMarker(options);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locate, 15f));
+                   .icon(BitmapDescriptorFactory.fromBitmap(bytesToBitmap(activeProfile.getImgbytes())));
+          marker = mMap.addMarker(options);
+           mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locate, 15f));
 }}
 
     private void setMarker(ActiveProfile activeProfile){
@@ -102,30 +104,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(activeProfile.getImgbytes() != null){
 
-            LatLng locate = new LatLng(activeProfile.getLat(),activeProfile.getLon());
-            MarkerOptions options = new MarkerOptions().title(activeProfile.getName()).position(locate)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            marker = mMap.addMarker(options);
+           LatLng locate = new LatLng(activeProfile.getLat(),activeProfile.getLon());
+           MarkerOptions options = new MarkerOptions().title(activeProfile.getName()).position(locate)
+                   .icon(BitmapDescriptorFactory.fromBitmap(bytesToBitmap(activeProfile.getImgbytes())));
+           marker = mMap.addMarker(options);
+
 
         }}
 
 
 
-    public static Bitmap StringToBitMap(byte[]bytefromarray) {
-        try {
+    public static Bitmap bytesToBitmap (byte[] imageBytes)
+    {
+        byte[] byte1 = imageBytes;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(byte1, 0, imageBytes.length);
+        Matrix matrix = new Matrix();
+        matrix.setScale(-1, 1);
+        matrix.postRotate(90);
+        matrix.postTranslate(bitmap.getWidth(), 0);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap resize = Bitmap.createScaledBitmap(bitmap,100,100,false);
 
-
-            byte[] bytes = bytefromarray;
-            String str = new String(bytes, "UTF-8");
-
-            byte[] encodeByte = Base64.decode(str, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0,
-                    encodeByte.length);
-            return bitmap;
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
+        return resize;
     }
+
+
 
 }

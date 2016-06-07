@@ -1,5 +1,7 @@
 package com.datasteffen.datenclick;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -64,7 +66,6 @@ public class AsyncGetActiveProfile extends AsyncTask<List<ActiveProfile>,Void,Li
                 i = is.read();
             }
 
-
             JSONArray jarray = new JSONArray(bo.toString());
             for(int j = 0; j < jarray.length();j++){
                 JSONObject jsonobject = jarray.getJSONObject(j);
@@ -77,7 +78,9 @@ public class AsyncGetActiveProfile extends AsyncTask<List<ActiveProfile>,Void,Li
 
                 float lat = Float.parseFloat(jso.optString("lat"));
                 float lon = Float.parseFloat(jso.optString("lon"));
-                byte[] image = jso.optString("image").getBytes();
+                String stringbyte = jso.optString("image");
+
+                byte[] image = Base64.decode(stringbyte.getBytes(), Base64.NO_WRAP);
 
 
 
@@ -96,4 +99,6 @@ public class AsyncGetActiveProfile extends AsyncTask<List<ActiveProfile>,Void,Li
         }
         return null;
     }
+
+
 }

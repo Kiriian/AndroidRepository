@@ -15,9 +15,12 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -42,6 +45,7 @@ public class AcceptImgActivity extends AppCompatActivity {
     Button btnforward;
     Profile p = null;
     byte[] b = null;
+
     ActiveProfile activeProfile = new ActiveProfile();
 
 
@@ -220,11 +224,20 @@ public class AcceptImgActivity extends AppCompatActivity {
                 urlConnection.setDoOutput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
 
+                String bytes = Base64.encodeToString(activeProfile.getImgbytes(), Base64.NO_WRAP);
+           //     bytes.replaceAll("\\n", "");
+
                 OutputStream os = urlConnection.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(os);
-                String jsonObject = activeProfile.toJson();
+               String jsonObject = activeProfile.toJson();
 
-                wr.write(jsonObject);
+                JSONObject js = new JSONObject();
+                js.put("email",activeProfile.getEmail());
+                js.put("lat",activeProfile.getLat());
+                js.put("lon", activeProfile.getLon());
+                js.put("image",bytes);
+
+                wr.write(js.toString());
                 wr.flush();
                 wr.close();
                 os.close();
@@ -250,4 +263,10 @@ public class AcceptImgActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    public static String encodeImage(byte[] imageByteArray) {
+        return Base64.encodeToString(imageByteArray, Base64.DEFAULT);
+    }
+
+
 }

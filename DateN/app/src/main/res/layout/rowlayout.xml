@@ -1,37 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 
+
+    <LinearLayout
+
+        android:id="@+id/imagelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_alignParentLeft="true"
+
+        android:layout_marginRight="5dip">
+
+        <ImageView
+            android:id="@+id/imageview1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
+
+
+    </LinearLayout>
 
     <TextView
-
+        android:layout_toRightOf="@+id/imagelayout"
         android:id="@+id/textview1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:textSize="15dp"/>
 
     <TextView
-        android:paddingLeft="5dp"
-
+        android:layout_toRightOf="@+id/imagelayout"
+        android:layout_below="@id/textview1"
         android:id="@+id/textview2"
-        android:layout_toLeftOf="@id/textview1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"/>
 
     <TextView
-        android:paddingLeft="5dp"
-
+        android:layout_toRightOf="@+id/imagelayout"
         android:id="@+id/textview3"
-        android:layout_toLeftOf="@id/textview2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textview2"
+        android:textSize="15dp"/>
 
     <TextView
+        android:layout_toRightOf="@+id/imagelayout"
         android:paddingLeft="5dp"
-
         android:id="@+id/textview4"
-        android:layout_toLeftOf="@id/textview3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/textview3"
+        android:textSize="15dp"/>
 
-</LinearLayout>
+</RelativeLayout>

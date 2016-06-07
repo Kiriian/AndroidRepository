@@ -25,22 +25,8 @@ public class ProfileActiveToDate extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_daterlist_fragment,container,false);
 
-        try {
-            activeProfileList = new AsyncGetActiveProfile().execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-
 
         tv = (ListView) view.findViewById(R.id.listviewid);
-
-        for (ActiveProfile d :activeProfileList) {
-
-         //   tv.setAdapter);
-        }
 
         return  view;
     }
