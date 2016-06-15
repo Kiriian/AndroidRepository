@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -52,27 +53,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        List<ActiveProfile> activeIteratedProfileList = new ArrayList<>();
+        Iterator<ActiveProfile> it = null;
         Bundle bundle = getIntent().getExtras();
         ActiveProfile activeProfile = (ActiveProfile)bundle.get("ownlocation");
 
-        ArrayAdapter arrayAdapter = new ActiveProfileAdapter(this,activeProfileList);
+        for (it = activeProfileList.iterator(); it.hasNext();)
+        {
+            ActiveProfile a = it.next();
+            if (activeProfile.getEmail().equals(a.getEmail()))
+            {
+                setMarkermaster(activeProfile);
+                it.remove();
+            } else
+            {
+                setMarker(a);
+                activeIteratedProfileList.add(a);
+            }
+
+        }
+        ArrayAdapter arrayAdapter = new ActiveProfileAdapter(this,activeIteratedProfileList);
         ListView listview = (ListView)findViewById(R.id.listviewid);
         listview.setAdapter(arrayAdapter);
-
-
-        for (ActiveProfile a :activeProfileList) {
-
-            if(activeProfile.getName().equals(a.getName())){
-
-                setMarkermaster(activeProfile);
-
-           }else {
-
-                setMarker(a);
-
-            }
-      }
     }
 
 
@@ -112,6 +114,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bitmap resize = Bitmap.createScaledBitmap(bitmap,100,100,false);
 
         return resize;
+    }
+
+    public static <T> List<T> copyIterator(Iterator<T> iterator) {
+        List<T> copy = new ArrayList<T>();
+        while (iterator.hasNext())
+            copy.add(iterator.next());
+        return copy;
     }
 
 
