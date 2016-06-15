@@ -43,12 +43,14 @@ public class SignupActivity extends AppCompatActivity {
         final EditText searchfromage = (EditText)findViewById(R.id.searchfromage);
         final EditText searchtoage = (EditText)findViewById(R.id.searchtoage);
 
+        assert btn != null;
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Profile pf = new Profile();
-                pf.setPassword(password.getText().toString());pf.setEmail(email.getText().toString());
+                pf.setPassword(password.getText().toString());
+                pf.setEmail(email.getText().toString());
                 pf.setName(name.getText().toString());
                 pf.setAge(Integer.parseInt(age.getText().toString()));
                 String gender = gendermale.isChecked() ? "male": "female";
@@ -64,7 +66,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
                 try {
-                    pf = new AsyncTaskSendUserToDb().execute(pf).get();
+                    new AsyncTaskSendUserToDb().execute(pf).get();
                     //to do, save pf in sqllite
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -103,23 +105,14 @@ public class SignupActivity extends AppCompatActivity {
                 wr.flush();
                 wr.close();
                 os.close();
-
+                // kun for at få response så det bliver gemt i databasen
                 InputStream ins = urlConnection.getInputStream();
                 InputStreamReader isr = new InputStreamReader(ins);
                 BufferedReader in = new BufferedReader(isr);
 
-                String inputLine;
-                String result= "";
-
-                while( (inputLine = in.readLine()) != null )
-                    result += inputLine;
-
                 in.close();
 
-
-                //      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                return pf;
+             return pf;
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

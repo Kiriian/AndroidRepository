@@ -36,8 +36,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Camera mCamera;
     private byte[] imageBytes;
 
-    private boolean isPreviewRunning = false;
-
 
     public MySurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,10 +45,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-        if (mHolder.getSurface() == null){
-            return;
-        }
 
         try {
             mCamera.stopPreview();
@@ -78,20 +72,16 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 //        this.setLayoutParams(lp);
 
         synchronized (this) {
-            if (isPreviewRunning)
-                return;
 
             this.setWillNotDraw(false); // This allows us to make our own draw calls to this canvas
 
 // camera id 1 = front
             mCamera = Camera.open(1);
-            isPreviewRunning = true;
             Camera.Parameters p = mCamera.getParameters();
             Camera.Size size = p.getPreviewSize();
             width = size.width;
             height = size.height;
             p.setPreviewFormat(ImageFormat.NV21);
-            showSupportedCameraFormats(p);
             mCamera.setParameters(p);
             mCamera.setDisplayOrientation(90);
 
@@ -101,7 +91,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         synchronized (this) {
@@ -110,7 +99,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     //mHolder.removeCallback(this);
                     mCamera.setPreviewCallback(null);
                     mCamera.stopPreview();
-                    isPreviewRunning  = false;
                     mCamera.release();
                 }
             } catch (Exception e) {
@@ -127,14 +115,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         Log.d("Camera", "Got a camera frame");
-        if (!isPreviewRunning)
-            return;
 
         Canvas canvas = null;
-
-        if (mHolder == null) {
-            return;
-        }
 
         try {
 
@@ -143,30 +125,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             yuvImage1.compressToJpeg(new Rect(0, 0, width, height), 50, out1);
             imageBytes = out1.toByteArray();
 
-            synchronized (mHolder) {
-                canvas = mHolder.lockCanvas(null);
-                int canvasWidth = canvas.getWidth();
-                int canvasHeight = canvas.getHeight();
 
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, width, height, null);
-                yuvImage.compressToJpeg(new Rect(0, 0, width, height), 50, out);
-                imageBytes = out.toByteArray();
-                Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-
-
-                Matrix matrix = new Matrix();
-                //matrix.postRotate(270);
-                matrix.setScale(-1,1);
-                matrix.postTranslate(width, 0);
-                image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
-
-
-                canvas.drawBitmap(image, 0,0 ,null);
-
-
-
-            }
         }  catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -178,32 +137,4 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
     }
-
-    private void showSupportedCameraFormats(Camera.Parameters p) {
-        List<Integer> supportedPictureFormats = p.getSupportedPreviewFormats();
-        Log.d(TAG, "preview format:" + cameraFormatIntToString(p.getPreviewFormat()));
-        for (Integer x : supportedPictureFormats) {
-            Log.d(TAG, "suppoterd format: " + cameraFormatIntToString(x.intValue()));
-        }
-
-    }
-
-    private String cameraFormatIntToString(int format) {
-        switch (format) {
-            case PixelFormat.JPEG:
-                return "JPEG";
-            case PixelFormat.YCbCr_420_SP:
-                return "NV21";
-            case PixelFormat.YCbCr_422_I:
-                return "YUY2";
-            case PixelFormat.YCbCr_422_SP:
-                return "NV16";
-            case PixelFormat.RGB_565:
-                return "RGB_565";
-            default:
-                return "Unknown:" + format;
-
-        }
-    }
-
 }

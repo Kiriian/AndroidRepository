@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -57,11 +58,11 @@ public class LoginActivity extends AppCompatActivity  {
 
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static  final int ACCESS_FINE_LOCATION = 1;
     String mEmail;
     String mPassword;
     private EditText mEmailView;
     private EditText mPasswordView;
-    Boolean b = false;
     Profile profile;
 
     @Override
@@ -81,7 +82,7 @@ public class LoginActivity extends AppCompatActivity  {
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
 
 
         }
@@ -90,7 +91,7 @@ public class LoginActivity extends AppCompatActivity  {
         mPasswordView = (EditText) findViewById(R.id.password);
 
         Button signup = (Button) findViewById(R.id.signupbutton);
-        assert signup != null;
+       assert signup != null;
         signup.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

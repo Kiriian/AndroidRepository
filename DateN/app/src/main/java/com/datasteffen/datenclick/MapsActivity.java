@@ -48,35 +48,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        Bundle bundle = getIntent().getExtras();
+        ActiveProfile activeProfile = (ActiveProfile)bundle.get("ownlocation");
 
         ArrayAdapter arrayAdapter = new ActiveProfileAdapter(this,activeProfileList);
         ListView listview = (ListView)findViewById(R.id.listviewid);
         listview.setAdapter(arrayAdapter);
 
 
-        Bundle bundle = getIntent().getExtras();
-        ActiveProfile activeProfile = (ActiveProfile)bundle.get("ownlocation");
-        Profile profile = (Profile)bundle.get("from");
-
-        setMarkermaster(activeProfile);
-
         for (ActiveProfile a :activeProfileList) {
 
             if(activeProfile.getName().equals(a.getName())){
 
+                setMarkermaster(activeProfile);
 
            }else {
 
@@ -88,26 +77,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private void setMarkermaster(ActiveProfile activeProfile){
-        Marker marker = null;
 
         if(activeProfile.getImgbytes() != null){
 
           LatLng locate = new LatLng(activeProfile.getLat(),activeProfile.getLon());
             MarkerOptions options = new MarkerOptions().title(activeProfile.getName()).position(locate)
                    .icon(BitmapDescriptorFactory.fromBitmap(bytesToBitmap(activeProfile.getImgbytes())));
-          marker = mMap.addMarker(options);
+           mMap.addMarker(options);
            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locate, 15f));
 }}
 
     private void setMarker(ActiveProfile activeProfile){
-        Marker marker = null;
 
         if(activeProfile.getImgbytes() != null){
 
            LatLng locate = new LatLng(activeProfile.getLat(),activeProfile.getLon());
            MarkerOptions options = new MarkerOptions().title(activeProfile.getName()).position(locate)
                    .icon(BitmapDescriptorFactory.fromBitmap(bytesToBitmap(activeProfile.getImgbytes())));
-           marker = mMap.addMarker(options);
+           mMap.addMarker(options);
 
 
         }}
@@ -121,7 +108,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Matrix matrix = new Matrix();
         matrix.setScale(-1, 1);
         matrix.postRotate(90);
-        matrix.postTranslate(bitmap.getWidth(), 0);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         Bitmap resize = Bitmap.createScaledBitmap(bitmap,100,100,false);
 

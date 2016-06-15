@@ -39,7 +39,6 @@ public class AcceptImgActivity extends AppCompatActivity {
     private final static int TIME_UPDATE = 5;
     private static final int PERMISSION_REQUEST_CODE = 1;
     private LocationManager locationManager;
-    private boolean LocationAvailable;
     public Location loc;
     ImageView im;
     Button btnback;
@@ -56,7 +55,7 @@ public class AcceptImgActivity extends AppCompatActivity {
         setContentView(R.layout.activity_accept_img);
         Bundle bundle = getIntent().getExtras();
 
-        LocationAvailable = false;
+
 
         p = (Profile) bundle.get("from");
         b = (byte[]) bundle.get("picture1");
@@ -141,13 +140,8 @@ public class AcceptImgActivity extends AppCompatActivity {
         Matrix matrix = new Matrix();
         matrix.setScale(-1, 1);
         matrix.postRotate(90);
-        matrix.postTranslate(image.getWidth(), 0);
         image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
         im.setImageBitmap(image);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        image.compress(CompressFormat.JPEG, 50, out);
-
-        out.toByteArray();
     }
 
 
@@ -188,10 +182,10 @@ public class AcceptImgActivity extends AppCompatActivity {
 
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if(result == PackageManager.PERMISSION_GRANTED){
-            LocationAvailable = true;
+
             return true;
         }else{
-            LocationAvailable = false;
+
             return false;
         }
     }
@@ -205,8 +199,6 @@ public class AcceptImgActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
     }
-
-
 
     public class AsyncTaskSendactiveprofileToDb extends AsyncTask<ActiveProfile,Void,ActiveProfile> {
 
@@ -228,20 +220,15 @@ public class AcceptImgActivity extends AppCompatActivity {
                 Bitmap image = BitmapFactory.decodeByteArray(activeProfile.getImgbytes(), 0,activeProfile.getImgbytes().length);
 
                 Matrix matrix = new Matrix();
-
-                matrix.postTranslate(image.getWidth(), 0);
                 image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 Bitmap resize = Bitmap.createScaledBitmap(image,100,100,false);
                 resize.compress(CompressFormat.JPEG, 75, out);
 
-
                 String bytes = Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP);
-
 
                 OutputStream os = urlConnection.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(os);
-               String jsonObject = activeProfile.toJson();
 
                 JSONObject js = new JSONObject();
                 js.put("email",activeProfile.getEmail());
@@ -258,12 +245,6 @@ public class AcceptImgActivity extends AppCompatActivity {
                 InputStreamReader isr = new InputStreamReader(ins);
                 BufferedReader in = new BufferedReader(isr);
 
-                String inputLine;
-                String result= "";
-
-                while( (inputLine = in.readLine()) != null )
-                    result += inputLine;
-
                 in.close();
 
 
@@ -275,10 +256,4 @@ public class AcceptImgActivity extends AppCompatActivity {
             return null;
         }
     }
-
-    public static String encodeImage(byte[] imageByteArray) {
-        return Base64.encodeToString(imageByteArray, Base64.DEFAULT);
-    }
-
-
 }

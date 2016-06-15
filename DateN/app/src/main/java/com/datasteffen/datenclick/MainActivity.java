@@ -47,15 +47,7 @@ public class MainActivity extends AppCompatActivity{
                     new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
 
         }else{
-            addCameraview();
-        }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-
+         addCameraview();
         }
 
         c = (Button) findViewById(R.id.button);
@@ -65,17 +57,12 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Bundle bundle = getIntent().getExtras();
 
-
                 final Profile p = (Profile) bundle.get("from");
 
                 Profile pf = new Profile(p.get_id(),p.getEmail(),p.getName(),p.getAge(),p.getGender(),p.getSearchmale(),p.getSearchfemale(),p.getSearchfromage(),p.getSearchtoage());
 
                 Intent i = new Intent(MainActivity.this,AcceptImgActivity.class);
                 byte[] b = ms.TakePicture();
-
-
-
-
 
                 i.putExtra("picture1",b);
                 i.putExtra("from",pf);
@@ -101,7 +88,7 @@ public class MainActivity extends AppCompatActivity{
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    addCameraview();
+                   addCameraview();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 

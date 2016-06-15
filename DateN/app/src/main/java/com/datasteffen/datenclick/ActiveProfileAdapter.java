@@ -35,7 +35,6 @@ public class ActiveProfileAdapter extends ArrayAdapter<ActiveProfile> {
         ActiveProfile activeProfile = getItem(position);
 
         View customView = layoutInflater.inflate(R.layout.rowlayout, parent, false);
-        ActiveProfile activeProfile1 = getItem(position);
 
         im = (ImageView) customView.findViewById(R.id.imageview1);
         tv1 = (TextView) customView.findViewById(R.id.textview1);
@@ -59,9 +58,7 @@ public class ActiveProfileAdapter extends ArrayAdapter<ActiveProfile> {
         Matrix matrix = new Matrix();
         matrix.setScale(-1, 1);
         matrix.postRotate(90);
-        matrix.postTranslate(bitmap.getWidth(), 0);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
 
         return bitmap;
     }
