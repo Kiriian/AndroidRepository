@@ -79,8 +79,9 @@ public class AsyncGetActiveProfile extends AsyncTask<List<ActiveProfile>,Void,Li
                 float lat = Float.parseFloat(jso.optString("lat"));
                 float lon = Float.parseFloat(jso.optString("lon"));
                 String stringbyte = jso.optString("image");
-
                 byte[] image = Base64.decode(stringbyte.getBytes(), Base64.NO_WRAP);
+
+
 
 
 

@@ -61,8 +61,8 @@ public class ActiveProfileAdapter extends ArrayAdapter<ActiveProfile> {
         matrix.postRotate(90);
         matrix.postTranslate(bitmap.getWidth(), 0);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        Bitmap resize = Bitmap.createScaledBitmap(bitmap,100,100,false);
 
-        return resize;
+
+        return bitmap;
     }
 }

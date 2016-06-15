@@ -154,10 +154,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 imageBytes = out.toByteArray();
                 Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
+
                 Matrix matrix = new Matrix();
                 //matrix.postRotate(270);
                 matrix.setScale(-1,1);
-                matrix.postTranslate(width,0);
+                matrix.postTranslate(width, 0);
                 image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
 
 

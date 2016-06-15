@@ -3,6 +3,7 @@ package com.datasteffen.datenclick;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 public class MainActivity extends AppCompatActivity{
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+
     Button c;
     private static int TAKE_PICTURE= -1;
     MySurfaceView ms;
@@ -70,6 +72,10 @@ public class MainActivity extends AppCompatActivity{
 
                 Intent i = new Intent(MainActivity.this,AcceptImgActivity.class);
                 byte[] b = ms.TakePicture();
+
+
+
+
 
                 i.putExtra("picture1",b);
                 i.putExtra("from",pf);

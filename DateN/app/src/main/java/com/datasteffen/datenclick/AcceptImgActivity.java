@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
@@ -144,7 +145,7 @@ public class AcceptImgActivity extends AppCompatActivity {
         image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
         im.setImageBitmap(image);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        image.compress(CompressFormat.JPEG, 50, out);
 
         out.toByteArray();
     }
@@ -224,8 +225,19 @@ public class AcceptImgActivity extends AppCompatActivity {
                 urlConnection.setDoOutput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
 
-                String bytes = Base64.encodeToString(activeProfile.getImgbytes(), Base64.NO_WRAP);
-           //     bytes.replaceAll("\\n", "");
+                Bitmap image = BitmapFactory.decodeByteArray(activeProfile.getImgbytes(), 0,activeProfile.getImgbytes().length);
+
+                Matrix matrix = new Matrix();
+
+                matrix.postTranslate(image.getWidth(), 0);
+                image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                Bitmap resize = Bitmap.createScaledBitmap(image,100,100,false);
+                resize.compress(CompressFormat.JPEG, 75, out);
+
+
+                String bytes = Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP);
+
 
                 OutputStream os = urlConnection.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(os);
